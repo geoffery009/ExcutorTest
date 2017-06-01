@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
@@ -37,8 +38,9 @@ public class ImageListActivity extends AppCompatActivity {
         String img10 = "http://img001.21cnimg.com/photos/album/20150702/m600/D5D096903FB243E26F0174B40D6BFAB0.jpeg";
         String img11 = "http://img001.21cnimg.com/photos/album/20150702/m600/F6DA392C856D17EAC2B1FAF757DCDF6F.jpeg";
         String img12 = "http://img001.21cnimg.com/photos/album/20150702/m600/F19BE9EEE072F47EFC9E6304E891600D.jpeg";
+        String img13 = "http://img001.21cnimg.com/photos/album/20150702/m600/6537D11B083B65CB1ACEAD56AAA1295E.jpeg";
 
-        String[] arr = new String[]{img1, img2, img3, img4, img5, img6, img7, img8, img9, img10, img11, img12};
+        String[] arr = new String[]{img1, img2, img3, img4, img5, img13, img6, img7, img8, img9, img10, img11, img12};
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycleView);
         recyclerView.setHasFixedSize(true);
@@ -66,45 +68,18 @@ public class ImageListActivity extends AppCompatActivity {
 
             final int width = holder.view.getWidth();
 
-            Transformation transformation = new Transformation() {
-                @Override
-                public Bitmap transform(Bitmap source) {
-                    if (source != null && width != 0) {
-                        if (source.getWidth() >= width) {
-                            try {
-                                float scale = source.getHeight() / (float) source.getWidth();
-                                int newHeight = (int) (scale * width);
-                                Log.d(TAG, "width:" + source.getWidth() + " ,height:" + source.getHeight() + ";new width:" + width + " ,new height:" + newHeight);
-                                Bitmap newSource = Bitmap.createScaledBitmap(source, width, newHeight, false);
-                                if (newSource != null) {
-                                    if (newSource != source) {
-                                        source.recycle();
-                                    }
-                                    return newSource;
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Log.d(TAG, "transform error");
-                                return source;
-                            }
-                        }
-
-                    } else
-                        Log.d(TAG, "transform null");
-                    return source;
-                }
-
-                @Override
-                public String key() {
-                    return "transformation" + " desiredWidth";
-                }
-            };
             //加载图片
-            Picasso.with(holder.context).load(url).transform(transformation).into(holder.imageView);
+            Picasso.with(holder.context).
+
+                    load(url).placeholder(R.mipmap.ic_launcher).error(R.mipmap.ic_launcher).
+
+                    into(holder.imageView);
 
 
             //预览图片
-            holder.cardView.setOnClickListener(new View.OnClickListener() {
+            holder.cardView.setOnClickListener(new View.OnClickListener()
+
+            {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(holder.context, ImageDetailActivity.class);
@@ -125,6 +100,7 @@ public class ImageListActivity extends AppCompatActivity {
         private Context context;
         private ImageView imageView;
         private CardView cardView;
+        private Button btnDetail;
 
         public MyVH(Context context, View itemView) {
             super(itemView);
@@ -132,6 +108,7 @@ public class ImageListActivity extends AppCompatActivity {
             this.context = context;
             this.imageView = (ImageView) itemView.findViewById(R.id.imageView);
             this.cardView = (CardView) itemView.findViewById(R.id.cardView);
+            this.btnDetail = (Button) itemView.findViewById(R.id.btnDetail);
         }
     }
 }
